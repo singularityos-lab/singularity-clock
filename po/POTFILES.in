@@ -1,0 +1,9 @@
+# List of source files containing translatable strings.
+src/main.vala
+src/window.vala
+src/alarm.vala
+src/ringer.vala
+src/alarms_view.vala
+src/world_view.vala
+src/stopwatch_view.vala
+src/timer_view.vala

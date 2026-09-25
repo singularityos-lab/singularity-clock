@@ -1,0 +1,21 @@
+{
+    "schema-id": "dev.sinty.clock",
+    "settings": [
+        {
+            "key": "ring-minutes",
+            "label": "Ring For (minutes)",
+            "type": "int",
+            "widget": "spin",
+            "min": 1,
+            "max": 30
+        },
+        {
+            "key": "snooze-minutes",
+            "label": "Snooze For (minutes)",
+            "type": "int",
+            "widget": "spin",
+            "min": 1,
+            "max": 60
+        }
+    ]
+}

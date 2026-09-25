@@ -1,0 +1,6 @@
+Template(class: "SingularityAppsClockWindow", parent: "SingularityWidgetsWindow") {
+
+    VBox(id: "main_box", spacing: 0) {
+        Stack(id: "view_stack", vexpand: true, transitionType: "crossfade")
+    }
+}
