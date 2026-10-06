@@ -1,0 +1,7 @@
+[Plugin]
+Module=clock-timer-tile
+Name=Timer Tile
+Description=A quick settings tile that starts a timer in Clock
+Authors=Singularity Team
+Website=https://sinty.dev
+X-Singularity-App=dev.sinty.clock

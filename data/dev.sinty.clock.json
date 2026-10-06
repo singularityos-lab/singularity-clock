@@ -16,6 +16,30 @@
             "widget": "spin",
             "min": 1,
             "max": 60
+        },
+        {
+            "key": "pomodoro-focus-minutes",
+            "label": "Pomodoro Focus (minutes)",
+            "type": "int",
+            "widget": "spin",
+            "min": 1,
+            "max": 120
+        },
+        {
+            "key": "pomodoro-short-break-minutes",
+            "label": "Pomodoro Short Break (minutes)",
+            "type": "int",
+            "widget": "spin",
+            "min": 1,
+            "max": 60
+        },
+        {
+            "key": "pomodoro-long-break-minutes",
+            "label": "Pomodoro Long Break (minutes)",
+            "type": "int",
+            "widget": "spin",
+            "min": 1,
+            "max": 60
         }
     ]
 }

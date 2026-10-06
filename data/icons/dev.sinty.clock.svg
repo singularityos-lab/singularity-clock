@@ -1,38 +1,29 @@
 <svg width="236" height="236" viewBox="0 0 236 236" fill="none" xmlns="http://www.w3.org/2000/svg">
-<circle cx="118" cy="124" r="96" fill="url(#base)"/>
-<circle cx="118" cy="116" r="96" fill="url(#rim)"/>
-<circle cx="118" cy="116" r="80" fill="url(#face)"/>
-<g stroke="#161B23" stroke-opacity="0.55" stroke-linecap="round">
-<path d="M118 44V58" stroke-width="7"/>
-<path d="M190 116H176" stroke-width="7"/>
-<path d="M118 188V174" stroke-width="7"/>
-<path d="M46 116H60" stroke-width="7"/>
-<path d="M154 53.6L150.5 59.7" stroke-width="4"/>
-<path d="M180.4 80L174.3 83.5" stroke-width="4"/>
-<path d="M180.4 152L174.3 148.5" stroke-width="4"/>
-<path d="M154 178.4L150.5 172.3" stroke-width="4"/>
-<path d="M82 178.4L85.5 172.3" stroke-width="4"/>
-<path d="M55.6 152L61.7 148.5" stroke-width="4"/>
-<path d="M55.6 80L61.7 83.5" stroke-width="4"/>
-<path d="M82 53.6L85.5 59.7" stroke-width="4"/>
-</g>
-<path d="M118 116L118 70" stroke="#1F2937" stroke-width="10" stroke-linecap="round"/>
-<path d="M118 116L150 134" stroke="#1F2937" stroke-width="10" stroke-linecap="round"/>
-<path d="M118 132L118 64" stroke="#F97316" stroke-width="4" stroke-linecap="round" transform="rotate(-40 118 116)"/>
-<circle cx="118" cy="116" r="9" fill="#F97316"/>
-<circle cx="118" cy="116" r="4" fill="#FFF7ED"/>
 <defs>
-<linearGradient id="base" x1="118" y1="28" x2="118" y2="220" gradientUnits="userSpaceOnUse">
-<stop stop-color="#374151"/>
-<stop offset="1" stop-color="#111827"/>
-</linearGradient>
-<linearGradient id="rim" x1="118" y1="20" x2="118" y2="212" gradientUnits="userSpaceOnUse">
-<stop stop-color="#4B5563"/>
-<stop offset="1" stop-color="#1F2937"/>
-</linearGradient>
-<linearGradient id="face" x1="118" y1="36" x2="118" y2="196" gradientUnits="userSpaceOnUse">
-<stop stop-color="#F9FAFB"/>
-<stop offset="1" stop-color="#D1D5DB"/>
-</linearGradient>
+<linearGradient id="ck_body" x1="30" y1="40" x2="206" y2="220" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#ff7a6b"/><stop offset="0.5" stop-color="#e0392f"/><stop offset="1" stop-color="#9c1d17"/></linearGradient>
+<linearGradient id="ck_side" x1="0" y1="150" x2="0" y2="226" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#8a1813"/><stop offset="1" stop-color="#520c09"/></linearGradient>
+<linearGradient id="ck_bell" x1="0" y1="20" x2="0" y2="70" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#fff0c2"/><stop offset="0.5" stop-color="#e8b33e"/><stop offset="1" stop-color="#a8700f"/></linearGradient>
+<radialGradient id="ck_face" cx="118" cy="118" r="80" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#ffffff"/><stop offset="0.85" stop-color="#f4f1ea"/><stop offset="1" stop-color="#d8d0c0"/></radialGradient>
+<linearGradient id="ck_leg" x1="0" y1="190" x2="0" y2="222" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#e8b33e"/><stop offset="1" stop-color="#8a5c0c"/></linearGradient>
+<radialGradient id="ck_glass" cx="90" cy="96" r="90" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="white" stop-opacity="0.55"/><stop offset="0.4" stop-color="white" stop-opacity="0.1"/><stop offset="1" stop-color="white" stop-opacity="0"/></radialGradient>
+<filter id="ckshadow" x="-20" y="-20" width="276" height="276" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB"><feDropShadow dx="0" dy="5" stdDeviation="6" flood-color="#4c0d08" flood-opacity="0.45"/></filter>
 </defs>
+<g filter="url(#ckshadow)">
+<path d="M70 196l-16 22" stroke="url(#ck_leg)" stroke-width="12" stroke-linecap="round"/>
+<path d="M166 196l16 22" stroke="url(#ck_leg)" stroke-width="12" stroke-linecap="round"/>
+<path d="M28 64a34 34 0 0 1 60-24z" fill="url(#ck_bell)"/>
+<path d="M208 64a34 34 0 0 0-60-24z" fill="url(#ck_bell)"/>
+<rect x="110" y="34" width="16" height="16" rx="6" fill="url(#ck_bell)"/>
+<circle cx="118" cy="136" r="86" fill="url(#ck_side)"/>
+<circle cx="118" cy="130" r="86" fill="url(#ck_body)"/>
+</g>
+<circle cx="118" cy="130" r="70" fill="#8a1813" opacity="0.5"/>
+<circle cx="118" cy="130" r="68" fill="url(#ck_face)"/>
+<line x1="172.0" y1="130.0" x2="182.0" y2="130.0" stroke="#2f3b4c" stroke-width="4" stroke-linecap="round"/><line x1="168.2" y1="159.0" x2="173.4" y2="162.0" stroke="#2f3b4c" stroke-width="2.2" stroke-linecap="round"/><line x1="147.0" y1="180.2" x2="150.0" y2="185.4" stroke="#2f3b4c" stroke-width="2.2" stroke-linecap="round"/><line x1="118.0" y1="184.0" x2="118.0" y2="194.0" stroke="#2f3b4c" stroke-width="4" stroke-linecap="round"/><line x1="89.0" y1="180.2" x2="86.0" y2="185.4" stroke="#2f3b4c" stroke-width="2.2" stroke-linecap="round"/><line x1="67.8" y1="159.0" x2="62.6" y2="162.0" stroke="#2f3b4c" stroke-width="2.2" stroke-linecap="round"/><line x1="64.0" y1="130.0" x2="54.0" y2="130.0" stroke="#2f3b4c" stroke-width="4" stroke-linecap="round"/><line x1="67.8" y1="101.0" x2="62.6" y2="98.0" stroke="#2f3b4c" stroke-width="2.2" stroke-linecap="round"/><line x1="89.0" y1="79.8" x2="86.0" y2="74.6" stroke="#2f3b4c" stroke-width="2.2" stroke-linecap="round"/><line x1="118.0" y1="76.0" x2="118.0" y2="66.0" stroke="#2f3b4c" stroke-width="4" stroke-linecap="round"/><line x1="147.0" y1="79.8" x2="150.0" y2="74.6" stroke="#2f3b4c" stroke-width="2.2" stroke-linecap="round"/><line x1="168.2" y1="101.0" x2="173.4" y2="98.0" stroke="#2f3b4c" stroke-width="2.2" stroke-linecap="round"/>
+<path d="M118 130L118 84" stroke="#1f2733" stroke-width="7" stroke-linecap="round"/>
+<path d="M118 130L150 144" stroke="#1f2733" stroke-width="7" stroke-linecap="round"/>
+<path d="M118 130L90 104" stroke="#e0392f" stroke-width="3" stroke-linecap="round"/>
+<circle cx="118" cy="130" r="7" fill="#1f2733"/>
+<circle cx="118" cy="130" r="3" fill="#e0392f"/>
+<circle cx="118" cy="130" r="68" fill="url(#ck_glass)"/>
 </svg>

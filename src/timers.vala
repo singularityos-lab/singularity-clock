@@ -6,6 +6,7 @@ namespace Singularity.Apps {
         private uint tick_id = 0;
 
         public int64 duration { get; private set; default = 0; }
+        public TimerKind kind { get; private set; default = TimerKind.TIMER; }
         public bool running { get; private set; default = false; }
         public bool paused { get; private set; default = false; }
 
@@ -18,7 +19,8 @@ namespace Singularity.Apps {
             return int64.max(0, end_time - get_real_time());
         }
 
-        public void start(int64 seconds) {
+        public void start(int64 seconds, TimerKind kind = TimerKind.TIMER) {
+            this.kind = kind;
             duration = seconds * TimeSpan.SECOND;
             end_time = get_real_time() + duration;
             running = true;

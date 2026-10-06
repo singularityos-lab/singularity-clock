@@ -38,10 +38,13 @@ executable('singularity-clock',
     'src/alarm_store.vala',
     'src/ringer.vala',
     'src/timers.vala',
+    'src/timer_text.vala',
+    'src/timer_service.vala',
     'src/alarms_view.vala',
     'src/world_view.vala',
     'src/stopwatch_view.vala',
     'src/timer_view.vala',
+    'src/dock_status.vala',
     resources,
   ],
   dependencies: [gtk_dep, gee_dep, libsingularity_dep],
@@ -53,6 +56,42 @@ alarm_test = executable('alarm-test',
   dependencies: [gtk_dep, gee_dep],
 )
 test('alarm', alarm_test)
+
+timers_test = executable('timers-test',
+  ['tests/timers_test.vala', 'src/timer_text.vala'],
+  dependencies: [dependency('glib-2.0'), dependency('gobject-2.0')],
+)
+test('timers', timers_test)
+
+shared_module('singularity-clock-widget',
+  files('widget/world_widget.vala', 'src/alarm.vala'),
+  dependencies: [gtk_dep, gee_dep, libsingularity_dep],
+  install: true,
+  install_dir: get_option('libdir') / 'singularity' / 'widgets'
+)
+install_data('widget/dev.sinty.clock.world.widget',
+  install_dir: get_option('datadir') / 'singularity' / 'widgets'
+)
+
+shared_module('clock-timer-tile',
+  files('plugin/timer_tile.vala', 'src/timer_text.vala'),
+  dependencies: [gtk_dep, libsingularity_dep, dependency('libpeas-2')],
+  install: true,
+  install_dir: get_option('libdir') / 'singularity' / 'plugins' / 'clock-timer-tile'
+)
+install_data('plugin/clock-timer-tile.plugin',
+  install_dir: get_option('libdir') / 'singularity' / 'plugins' / 'clock-timer-tile'
+)
+
+service_conf = configuration_data()
+service_conf.set('bindir', get_option('prefix') / get_option('bindir'))
+configure_file(
+  input: 'data/dev.sinty.clock.service.in',
+  output: 'dev.sinty.clock.service',
+  configuration: service_conf,
+  install: true,
+  install_dir: get_option('datadir') / 'dbus-1' / 'services'
+)
 
 install_data('data/dev.sinty.clock.desktop',
   install_dir: get_option('datadir') / 'applications'

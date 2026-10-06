@@ -1,0 +1,3 @@
+[D-BUS Service]
+Name=dev.sinty.clock
+Exec=@bindir@/singularity-clock --gapplication-service

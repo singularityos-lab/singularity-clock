@@ -8,3 +8,16 @@ Type=Application
 Categories=Utility;Clock;
 Keywords=alarm;timer;stopwatch;world;time;
 StartupWMClass=dev.sinty.clock
+Actions=new-timer;new-alarm;stopwatch;
+
+[Desktop Action new-timer]
+Name=New Timer
+Exec=singularity-clock --new-timer
+
+[Desktop Action new-alarm]
+Name=New Alarm
+Exec=singularity-clock --new-alarm
+
+[Desktop Action stopwatch]
+Name=Stopwatch
+Exec=singularity-clock --stopwatch

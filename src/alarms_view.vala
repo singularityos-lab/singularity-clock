@@ -15,10 +15,12 @@ namespace Singularity.Apps {
             content = new Stack();
             content.vexpand = true;
 
-            var empty = new StatusPage();
-            empty.icon_name = "alarm-symbolic";
+            var empty = new WelcomePage();
+            empty.is_section = true;
+            empty.app_icon_name = "dev.sinty.clock";
             empty.title = _("No Alarms");
-            empty.description = _("Alarms ring even when Clock is closed");
+            empty.subtitle = _("Alarms ring even when Clock is closed");
+            empty.add_action("dev.sinty.clock", _("New Alarm"), _("Choose a time, the days it repeats and a label"), () => add_alarm());
             content.add_named(empty, "empty");
 
             group = new PreferencesGroup();
@@ -36,7 +38,13 @@ namespace Singularity.Apps {
         }
 
         public void add_alarm() {
-            new AlarmDialog(app, null).open_dialog();
+            open_dialog(null);
+        }
+
+        private void open_dialog(Alarm? alarm) {
+            var dialog = new AlarmDialog(app, alarm);
+            dialog.transient_for = get_root() as Gtk.Window;
+            dialog.open_dialog();
         }
 
         private void rebuild() {
@@ -47,6 +55,9 @@ namespace Singularity.Apps {
 
         private ActionRow build_row(Alarm alarm) {
             string subtitle = alarm.label != "" ? "%s  ·  %s".printf(alarm.days_text(), alarm.label) : alarm.days_text();
+            if (alarm.enabled && app.alarms.is_skipped(alarm, alarm.next_ring(new DateTime.now_local()))) {
+                subtitle = _("%s  ·  Next ring skipped").printf(subtitle);
+            }
             var row = new ActionRow(alarm.time_text(), subtitle);
             row.add_css_class("clock-alarm-row");
             if (!alarm.enabled) row.add_css_class("disabled");
@@ -64,7 +75,7 @@ namespace Singularity.Apps {
             edit.add_css_class("flat");
             edit.valign = Align.CENTER;
             edit.tooltip_text = _("Edit");
-            edit.clicked.connect(() => new AlarmDialog(app, alarm).open_dialog());
+            edit.clicked.connect(() => open_dialog(alarm));
 
             var remove = new Button.from_icon_name("user-trash-symbolic");
             remove.add_css_class("flat");
@@ -125,6 +136,7 @@ namespace Singularity.Apps {
             actions.halign = Align.END;
             var cancel = new Button.with_label(_("Cancel"));
             cancel.clicked.connect(() => close_dialog());
+            set_cancel_button(cancel);
             var save = new Button.with_label(_("Save"));
             save.add_css_class("suggested-action");
             save.clicked.connect(on_save);

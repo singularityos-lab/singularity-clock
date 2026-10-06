@@ -12,6 +12,7 @@ namespace Singularity.Apps {
         private CircularProgress progress;
         private Label remaining;
         private Button pause_button;
+        private Label phase;
 
         public TimerView(ClockApp app) {
             Object(orientation: Orientation.VERTICAL, spacing: 0);
@@ -66,6 +67,12 @@ namespace Singularity.Apps {
             start_button.halign = Align.CENTER;
             start_button.clicked.connect(() => start(picker_seconds()));
             body.append(start_button);
+            var pomodoro = new Button.with_label(_("Start Pomodoro"));
+            pomodoro.add_css_class("pill");
+            pomodoro.halign = Align.CENTER;
+            pomodoro.tooltip_text = _("Focus sessions with short breaks in between");
+            pomodoro.clicked.connect(() => app.start_pomodoro());
+            body.append(pomodoro);
             update_start_button();
             return body;
         }
@@ -91,6 +98,10 @@ namespace Singularity.Apps {
             dial.child = progress;
             dial.add_overlay(remaining);
             body.append(dial);
+            phase = new Label("");
+            phase.add_css_class("title-4");
+            phase.add_css_class("clock-hero-caption");
+            body.append(phase);
 
             var buttons = new Box(Orientation.HORIZONTAL, 12);
             buttons.halign = Align.CENTER;
@@ -103,7 +114,7 @@ namespace Singularity.Apps {
             var cancel = new Button.with_label(_("Cancel"));
             cancel.add_css_class("pill");
             cancel.add_css_class("destructive-action");
-            cancel.clicked.connect(() => timer.cancel());
+            cancel.clicked.connect(() => app.cancel_timer());
             buttons.append(pause_button);
             buttons.append(cancel);
             body.append(buttons);
@@ -112,8 +123,7 @@ namespace Singularity.Apps {
 
         private void start(int total_seconds) {
             if (total_seconds <= 0) return;
-            app.settings.set_int("timer-seconds", total_seconds);
-            timer.start(total_seconds);
+            app.start_timer(total_seconds);
         }
 
         private void update_start_button() {
@@ -129,7 +139,13 @@ namespace Singularity.Apps {
             int64 left = timer.remaining_usec();
             progress.fraction = timer.duration > 0 ? (double) left / timer.duration : 0;
             remaining.label = Stopwatch.format(left + TimeSpan.SECOND - 1, false);
+            if (remaining.label.length > 5) remaining.add_css_class("clock-hero-long");
+            else remaining.remove_css_class("clock-hero-long");
             pause_button.label = timer.paused ? _("Resume") : _("Pause");
+            phase.visible = timer.kind.is_pomodoro();
+            if (timer.kind == TimerKind.FOCUS) phase.label = _("Focus, session %d").printf(app.pomodoro.completed + 1);
+            else if (timer.kind == TimerKind.SHORT_BREAK) phase.label = _("Short Break");
+            else if (timer.kind == TimerKind.LONG_BREAK) phase.label = _("Long Break");
             if (!timer.running && !timer.paused) pages.visible_child_name = "setup";
         }
     }

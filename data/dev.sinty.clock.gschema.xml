@@ -6,6 +6,16 @@
       <summary>Alarms</summary>
       <description>Alarms as (id, hour, minute, weekday mask starting from Monday, label, enabled); a zero mask rings once.</description>
     </key>
+    <key name="alarm-actions" type="a{s(sss)}">
+      <default>{}</default>
+      <summary>Alarm actions</summary>
+      <description>Alarms that start another app instead of ringing, as alarm id mapped to (application id, action name, string parameter). The action is activated through org.freedesktop.Application; if that fails the alarm rings as usual.</description>
+    </key>
+    <key name="skipped-alarms" type="a{sx}">
+      <default>{}</default>
+      <summary>Skipped alarms</summary>
+      <description>Alarms whose next ring is skipped, as alarm id mapped to the Unix time of the skipped ring.</description>
+    </key>
     <key name="world-clocks" type="as">
       <default>[]</default>
       <summary>World clocks</summary>
@@ -27,6 +37,24 @@
       <default>300</default>
       <summary>Last timer length</summary>
       <description>Duration of the last timer, in seconds.</description>
+    </key>
+    <key name="pomodoro-focus-minutes" type="i">
+      <default>25</default>
+      <range min="1" max="120"/>
+      <summary>Pomodoro focus length</summary>
+      <description>Minutes of each Pomodoro focus session.</description>
+    </key>
+    <key name="pomodoro-short-break-minutes" type="i">
+      <default>5</default>
+      <range min="1" max="60"/>
+      <summary>Pomodoro short break</summary>
+      <description>Minutes of the break after a focus session.</description>
+    </key>
+    <key name="pomodoro-long-break-minutes" type="i">
+      <default>15</default>
+      <range min="1" max="60"/>
+      <summary>Pomodoro long break</summary>
+      <description>Minutes of the break after every fourth focus session.</description>
     </key>
     <key name="last-view" type="s">
       <default>'alarms'</default>

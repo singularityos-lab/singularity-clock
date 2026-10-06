@@ -4,6 +4,7 @@ namespace Singularity.Apps {
         private GLib.Settings settings;
         private Gee.ArrayList<Alarm> _alarms = new Gee.ArrayList<Alarm>();
         private Gee.HashMap<string, DateTime> snoozed = new Gee.HashMap<string, DateTime>();
+        private Gee.HashMap<string, int64?> skipped = new Gee.HashMap<string, int64?>();
         private DateTime last_check;
         private uint tick_id = 0;
         private bool saving = false;
@@ -19,6 +20,12 @@ namespace Singularity.Apps {
             this.settings = settings;
             last_check = new DateTime.now_local();
             load();
+            load_skipped();
+            settings.changed["skipped-alarms"].connect(() => {
+                if (saving) return;
+                load_skipped();
+                changed();
+            });
             settings.changed["alarms"].connect(() => {
                 if (saving) return;
                 load();
@@ -58,6 +65,54 @@ namespace Singularity.Apps {
             _alarms.remove(alarm);
             snoozed.unset(id);
             commit();
+        }
+
+        public bool is_skipped(Alarm alarm, DateTime occurrence) {
+            int64? at = skipped[alarm.id];
+            return at != null && (!) at == occurrence.to_unix();
+        }
+
+        public void set_skipped(Alarm alarm, bool skip) {
+            if (skip) skipped[alarm.id] = alarm.next_ring(new DateTime.now_local()).to_unix();
+            else skipped.unset(alarm.id);
+            save_skipped();
+            changed();
+        }
+
+        public Alarm? next_alarm(out DateTime? when, bool include_skipped = false) {
+            when = null;
+            Alarm? found = null;
+            var now = new DateTime.now_local();
+            foreach (var alarm in _alarms) {
+                if (!alarm.enabled) continue;
+                var ring = alarm.next_ring(now);
+                if (!include_skipped && is_skipped(alarm, ring)) ring = alarm.next_ring(ring);
+                if (when == null || ring.compare(when) < 0) {
+                    when = ring;
+                    found = alarm;
+                }
+            }
+            return found;
+        }
+
+        private void load_skipped() {
+            skipped.clear();
+            var iter = settings.get_value("skipped-alarms").iterator();
+            string id;
+            int64 at;
+            while (iter.next("{sx}", out id, out at)) skipped[id] = at;
+        }
+
+        private void save_skipped() {
+            var builder = new VariantBuilder(new VariantType("a{sx}"));
+            int64 now = new DateTime.now_local().to_unix();
+            foreach (var entry in skipped.entries) {
+                int64 at = (!) entry.value;
+                if (at > now && find(entry.key) != null) builder.add("{sx}", entry.key, at);
+            }
+            saving = true;
+            settings.set_value("skipped-alarms", builder.end());
+            saving = false;
         }
 
         public void snooze(string id, int minutes) {
@@ -117,13 +172,24 @@ namespace Singularity.Apps {
         private void tick() {
             var now = new DateTime.now_local();
             bool disabled_once = false;
+            bool skip_used = false;
             foreach (var alarm in _alarms.to_array()) {
-                if (!alarm.enabled || alarm.next_ring(last_check).compare(now) > 0) continue;
+                var due = alarm.next_ring(last_check);
+                if (!alarm.enabled || due.compare(now) > 0) continue;
                 if (alarm.days == 0) {
                     alarm.enabled = false;
                     disabled_once = true;
                 }
+                if (is_skipped(alarm, due)) {
+                    skipped.unset(alarm.id);
+                    skip_used = true;
+                    continue;
+                }
                 ringing(alarm);
+            }
+            if (skip_used) {
+                save_skipped();
+                changed();
             }
             foreach (var id in snoozed.keys.to_array()) {
                 if (snoozed[id].compare(now) > 0) continue;

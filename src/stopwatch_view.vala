@@ -53,6 +53,8 @@ namespace Singularity.Apps {
 
             stopwatch.tick.connect(update_time);
             stopwatch.laps_changed.connect(rebuild_laps);
+            stopwatch.laps_changed.connect(update_buttons);
+            stopwatch.notify["running"].connect(update_buttons);
             update_time();
             update_buttons();
             rebuild_laps();

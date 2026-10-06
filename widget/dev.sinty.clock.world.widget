@@ -1,0 +1,8 @@
+[Widget]
+Id=clock.world
+ProviderId=dev.sinty.clock
+Name=World Clocks
+IconName=preferences-system-time-symbolic
+Sizes=2x1;2x2
+Module=libsingularity-clock-widget.so
+ModuleSymbol=singularity_clock_widget_new
