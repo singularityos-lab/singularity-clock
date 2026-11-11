@@ -35,6 +35,7 @@ namespace Singularity.Apps {
             alarms = new AlarmStore(settings);
             timer = new CountdownTimer();
             stopwatch = new Stopwatch();
+            ClockIntents.install(this);
 
             alarms.ringing.connect((alarm) => {
                 if (!run_alarm_action(alarm)) ring_alarm(alarm);
