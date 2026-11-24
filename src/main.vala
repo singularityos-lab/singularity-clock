@@ -1,6 +1,6 @@
 namespace Singularity.Apps {
 
-    public class ClockApp : Singularity.Application, Singularity.Migration.Migratable {
+    public class ClockApp : Singularity.Application, Singularity.Migration.Migratable, Singularity.Startup.Bootable {
         public GLib.Settings settings { get; private set; }
         public AlarmStore alarms { get; private set; }
         public Ringer ringer { get; private set; }
@@ -177,7 +177,7 @@ namespace Singularity.Apps {
         }
 
         public void open_view(string view) {
-            activate();
+            show_window();
             if (window.is_active) {
                 show_view(view);
                 return;
@@ -272,7 +272,30 @@ namespace Singularity.Apps {
             if (timer_service != null) timer_service.emit_changed();
         }
 
-        protected override void activate() {
+        public Singularity.Startup.Plan build_plan(Singularity.Startup.Request request) {
+            var plan = new Singularity.Startup.Plan();
+            plan.version = "clock-1";
+            if (request.kind == Singularity.Startup.RequestKind.SERVICE) {
+                plan.main("ready", Singularity.Startup.Category.PREPARE, (c) => {})
+                    .reaches(Singularity.Startup.Milestone.SHELL_READY)
+                    .reaches(Singularity.Startup.Milestone.CONTENT_READY)
+                    .reaches(Singularity.Startup.Milestone.INTERACTIVE);
+                return plan;
+            }
+            plan.main("window", Singularity.Startup.Category.SHELL, (c) => {
+                show_window();
+                c.window = window;
+            }).reaches(Singularity.Startup.Milestone.SHELL_READY)
+              .reaches(Singularity.Startup.Milestone.CONTENT_READY)
+              .reaches(Singularity.Startup.Milestone.INTERACTIVE);
+            return plan;
+        }
+
+        public void handle_request(Singularity.Startup.Request request) {
+            show_window();
+        }
+
+        private void show_window() {
             if (window == null) adopt(new ClockWindow(this));
             window.present();
         }
