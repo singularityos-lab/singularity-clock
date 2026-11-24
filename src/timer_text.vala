@@ -97,5 +97,9 @@ namespace Singularity.Apps {
         public void reset() {
             completed = 0;
         }
+
+        public void restore(int count) {
+            completed = count;
+        }
     }
 }

@@ -28,6 +28,26 @@ namespace Singularity.Apps {
             arm();
         }
 
+        public Variant save_state() {
+            return new Variant("(sbbxxx)", kind.to_id(), running, paused, end_time, paused_remaining, duration);
+        }
+
+        public void restore_state(Variant state) {
+            string id;
+            bool was_running, was_paused;
+            int64 end, rest, length;
+            state.get("(sbbxxx)", out id, out was_running, out was_paused, out end, out rest, out length);
+            disarm();
+            kind = TimerKind.from_id(id);
+            duration = length;
+            end_time = end;
+            paused_remaining = rest;
+            paused = was_paused;
+            running = was_running;
+            if (running && !paused) arm();
+            tick();
+        }
+
         public void pause() {
             if (!running || paused) return;
             paused_remaining = remaining_usec();
@@ -75,6 +95,7 @@ namespace Singularity.Apps {
 
     public class Stopwatch : Object {
         private int64 started_at = 0;
+        private int64 started_real = 0;
         private int64 accumulated = 0;
         private int64 last_lap = 0;
         private uint tick_id = 0;
@@ -92,11 +113,43 @@ namespace Singularity.Apps {
         public void start() {
             if (running) return;
             started_at = get_monotonic_time();
+            started_real = get_real_time();
             running = true;
+            arm();
+        }
+
+        private void arm() {
             tick_id = Timeout.add(40, () => {
                 tick();
                 return Source.CONTINUE;
             });
+        }
+
+        public Variant save_state() {
+            var marks = new VariantBuilder(new VariantType("ax"));
+            foreach (int64? lap in laps) marks.add("x", (int64) lap);
+            return new Variant("(bxxx@ax)", running, running ? started_real : 0, accumulated, last_lap, marks.end());
+        }
+
+        public void restore_state(Variant state) {
+            bool was_running;
+            int64 real, total, previous;
+            Variant marks;
+            state.get("(bxxx@ax)", out was_running, out real, out total, out previous, out marks);
+            if (tick_id != 0) Source.remove(tick_id);
+            tick_id = 0;
+            accumulated = total;
+            last_lap = previous;
+            laps.clear();
+            foreach (var lap in marks) laps.add(lap.get_int64());
+            if (was_running) {
+                started_real = real;
+                started_at = get_monotonic_time() - (get_real_time() - real);
+                arm();
+            }
+            running = was_running;
+            laps_changed();
+            tick();
         }
 
         public void stop() {

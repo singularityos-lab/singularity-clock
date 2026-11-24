@@ -1,6 +1,6 @@
 namespace Singularity.Apps {
 
-    public class ClockApp : Singularity.Application {
+    public class ClockApp : Singularity.Application, Singularity.Migration.Migratable {
         public GLib.Settings settings { get; private set; }
         public AlarmStore alarms { get; private set; }
         public Ringer ringer { get; private set; }
@@ -273,14 +273,52 @@ namespace Singularity.Apps {
         }
 
         protected override void activate() {
-            if (window == null) {
-                window = new ClockWindow(this);
-                window.close_request.connect(() => {
-                    window = null;
-                    return false;
-                });
-            }
+            if (window == null) adopt(new ClockWindow(this));
             window.present();
+        }
+
+        private void adopt(ClockWindow w) {
+            window = w;
+            w.close_request.connect(() => {
+                if (window == w) window = null;
+                return false;
+            });
+        }
+
+        public Variant save_model() {
+            var d = new VariantDict();
+            d.insert_value("stopwatch", stopwatch.save_state());
+            d.insert_value("timer", timer.save_state());
+            d.insert_value("pomodoro", new Variant.int32(pomodoro.completed));
+            return d.end();
+        }
+
+        public async void restore_model(Variant model) throws Error {
+            var d = new VariantDict(model);
+            var watch = d.lookup_value("stopwatch", new VariantType("(bxxxax)"));
+            if (watch != null) stopwatch.restore_state(watch);
+            var done = d.lookup_value("pomodoro", VariantType.INT32);
+            if (done != null) pomodoro.restore(done.get_int32());
+            var countdown = d.lookup_value("timer", new VariantType("(sbbxxx)"));
+            if (countdown != null) timer.restore_state(countdown);
+            sync_timer_state();
+            sync_timer_actions();
+        }
+
+        public string window_kind(Gtk.Window w) {
+            return (w is ClockWindow) ? "clock" : "";
+        }
+
+        public Variant save_window(Gtk.Window w) {
+            return new VariantDict().end();
+        }
+
+        public async Gtk.Window? rebuild_window(string kind, Variant data) throws Error {
+            if (kind != "clock") return null;
+            if (window != null) window.destroy();
+            var w = new ClockWindow(this);
+            adopt(w);
+            return w;
         }
 
         private void ring_alarm(Alarm alarm) {
